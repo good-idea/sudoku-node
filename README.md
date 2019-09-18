@@ -1,6 +1,6 @@
-# Sudoku with Node
+# Sudoku Node
 
-A sudoku solving game for the command line.
+A sudoku puzzle game for the command line.
 
 ## Features
 
@@ -9,9 +9,10 @@ A sudoku solving game for the command line.
 
 ### Coming soon
 
+- Bundled lib with a CLI (e.g. `sudoku play hard`)
 - Arrow-key navigation & input (instead of typing each command)
 - More boards
-- Congratulaitions when the board is complete
+- Congratulations when the board is complete
 - Undo
 - Save your progress
 - Tests
