@@ -31,7 +31,7 @@ import {
   flattenArray,
   chunkArray,
 } from './utils'
-import { easyBoard } from './boards'
+import { getBoard } from './boards'
 import * as inquirer from 'inquirer'
 import chalk from 'chalk'
 
@@ -280,15 +280,23 @@ const getUserMove = async (): Promise<Move> => {
  */
 
 const instructions = `
-Instructions:
+- - Instructions  - - - - - - - - - - - - - - - - - 
+
 To add or update, type: a <column><row> <value>
                example: a c2 9
        To remove, type: r <column><row>
                example: r d6
 
-To see these instructions again, enter "h" or "help"`
+To see these instructions again, enter "h" or "help"
 
-const applyMove = (board: Board, move: Move): MoveResult => {
+- - - - - - - - - - - - - - - - - - - - - - - - - - 
+`
+
+const applyMove = (
+  board: Board,
+  initialBoard: Board,
+  move: Move,
+): MoveResult => {
   if (move.type === BADMOVE) {
     return {
       newBoard: board,
@@ -304,6 +312,15 @@ const applyMove = (board: Board, move: Move): MoveResult => {
   }
 
   const inputIndex = getCellIndex(move.cell, board.length)
+
+  if (initialBoard[inputIndex] !== BLANK) {
+    return {
+      newBoard: board,
+      message: chalk.red(
+        'You cannot change this cell, it is part of the original puzzle.',
+      ),
+    }
+  }
   const newValue = move.type === ADD ? move.value : (BLANK as Blank)
   const newBoard = [
     ...board.slice(0, inputIndex),
@@ -323,7 +340,6 @@ const applyMove = (board: Board, move: Move): MoveResult => {
 
 const startGame = (initialBoard: Board) => {
   const play = async (board: Board) => {
-    console.clear()
     const boardStatus = getBoardStatus(board)
 
     const getCellDetails = getCellDetailsFromBoard(
@@ -334,7 +350,7 @@ const startGame = (initialBoard: Board) => {
     const printableBoard = board.map(getCellDetails)
     printBoard(printableBoard)
     const move = await getUserMove()
-    const { newBoard, message } = applyMove(board, move)
+    const { newBoard, message } = applyMove(board, initialBoard, move)
     log(message)
     play(newBoard)
   }
@@ -346,14 +362,14 @@ const init = async () => {
   log(chalk.blue('Welcome to Sudoku-Node!'))
   log(chalk.blue(instructions))
 
-  const difficulty = await inquirer.prompt({
+  const input = await inquirer.prompt({
     type: 'list',
     message: 'Select your difficulty',
     name: 'difficulty',
     choices: ['easy', 'medium', 'hard'],
   })
-  chalk.yellow(`Selected: ${difficulty}`)
-  startGame(rawBoardToBoard(easyBoard))
+  const board = getBoard(input.difficulty)
+  startGame(rawBoardToBoard(board))
 }
 
 init()

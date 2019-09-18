@@ -28,3 +28,27 @@ export const mediumBoard: RawBoard = [
   [2, _, _, _, 3, 8, _, _, 1],
 ]
 
+export const hardBoard: RawBoard = [
+  [_, _, _, _, _, _, _, _, _],
+  [_, _, _, _, 9, _, _, _, 8],
+  [_, 4, _, _, _, 5, 3, _, 7],
+  [_, 8, _, _, 6, 1, _, 7, 4],
+  [_, 9, _, _, _, _, 5, _, _],
+  [_, 1, 7, _, _, _, _, _, 6],
+  [2, _, _, 6, _, _, 4, 8, _],
+  [_, _, _, 9, 1, _, 2, _, _],
+  [8, 3, 9, _, 2, _, _, _, _],
+]
+
+export const getBoard = (difficulty: string) => {
+  switch (difficulty) {
+    case 'easy':
+      return easyBoard
+    case 'medium':
+      return mediumBoard
+    case 'hard':
+      return hardBoard
+    default:
+      throw new Error(`There is no board for difficulty "${difficulty}"`)
+  }
+}
